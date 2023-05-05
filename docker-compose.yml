@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+    frontend:
+        image: canadaacrbogdantailup30442.azurecr.io/frontendrepo:latest
+        env_file: ./.env
+        container_name: frontend
+        ports:
+            - $FRONTEND_LOCAL_PORT:$FRONTEND_DOCKER_PORT
+        expose:
+            - $FRONTEND_DOCKER_PORT
+            

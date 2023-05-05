@@ -1,0 +1,73 @@
+.welcome-page-container.css-1oqqzyl-MuiContainer-root {
+    background-color: rgb(201, 213, 224);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 2560px !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container.css-1oqqzyl-MuiContainer-root {
+    width: 25vw;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 12px;
+    z-index: 2;
+    box-shadow: 0 0 20px rgb(121, 120, 120);
+    position: relative;
+}
+
+.login-image {
+    width: 25vw;
+    border-radius: 12px 12px;
+}
+
+.form-box {
+    padding: 6% 6%;
+    margin-top: 8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form {
+    width: 100%;
+    margin-top: 4%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.submit-button {
+    margin-top: 3%;
+    margin-bottom: 2%;
+    background-color: blue;
+}
+
+.hoverDiv {
+    display: none;
+}
+
+.logo-button:hover + .hoverDiv {
+    height: 5vh;
+    width: 6w;
+    justify-content: center;
+    display: block;
+}
+
+button:disabled {
+    background-color: rgb(218, 218, 218);
+}
+
+.logo-img {
+    height: 3vh;
+}
+
+
+.custom-button {
+    background-color: aqua;
+}
