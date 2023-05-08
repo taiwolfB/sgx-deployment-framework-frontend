@@ -29,17 +29,21 @@ function AuthComponent() {
     setOpenAzurePopup(!openAzurePopup)
   }
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     let authDto = {
       "subscriptionId": document.getElementById('azure-subscription-id').value,
       "tenantId": document.getElementById('azure-tenant-id').value,
     };
-    authorize(authDto, navigate);
+    let response = await authorize(authDto);
+    
+    if (localStorage.getItem("loggedInUser") !== '' && localStorage.getItem("userPrincipalName") !== '') {
+      navigate('/dashboard')
+    }
   }
   
   const handleOpenSocket = () => {
 
-    var sock = new SockJS(HOST.backend_api_websocket);
+    var sock = new SockJS(HOST.backend_api_websocket_device_code);
     
     sock.onopen = function() {
         console.log('open socket');
@@ -57,8 +61,8 @@ function AuthComponent() {
     var stompcli = Stomp.over(sock);
     stompcli.connect({}, function (frame) {
         stompcli.subscribe("/azure/device-code-provider", function (webSocketResponse) {
-          window.open(JSON.parse(webSocketResponse.body).url)
-          setDeviceCode(JSON.parse(webSocketResponse.body).deviceCode)
+          window.open(JSON.parse(webSocketResponse.body).url);
+          setDeviceCode(JSON.parse(webSocketResponse.body).deviceCode);
         });
     });
   }
@@ -70,9 +74,9 @@ function AuthComponent() {
 
   return (
     <Container className = 'welcome-page-container'>
-      <Typography component = 'div' variant = 'h3'>
+      {/* <Typography component = 'div' variant = 'h3'>
         A framework for safe deployments of Intel SGX Applications
-      </Typography> *
+      </Typography> * */}
       <Container className = 'login-container'>
         <img className = 'login-image' src={require('../../resources/deployment.png')}/>
         <Box className = 'form-box'>
@@ -107,6 +111,7 @@ function AuthComponent() {
                     <OutlinedInput
                         id="azure-subscription-id"
                         type={showSubscriptionId ? 'text' : 'password'}
+                        value="3509478a-02c5-4d60-9e10-9ef8a91f9fe6"
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton
@@ -125,6 +130,7 @@ function AuthComponent() {
                     <InputLabel htmlFor="azure-tenant-id">Azure Tenant Id</InputLabel>
                     <OutlinedInput
                         id="azure-tenant-id"
+                        value="9f558ccc-b781-4dd7-aefe-fb3db49503c9"
                         type={showTenantId ? 'text' : 'password'}
                         endAdornment={
                           <InputAdornment position="end">

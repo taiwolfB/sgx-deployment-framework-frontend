@@ -1,7 +1,6 @@
-import { useNavigate } from "react-router";
 import { HOST } from "../../hosts";
 
-function authorize(authDto, navigate) {
+async function authorize(authDto) {
     let request = new Request(HOST.backend_api_authorize, {
         method: 'POST',
         headers : {
@@ -13,13 +12,14 @@ function authorize(authDto, navigate) {
 
     console.log(HOST.backend_api_authorize)
     
-    fetch(request)
+    await fetch(request)
         .then(
             function(response) {
                 if (response.ok) {
                     response.json().then(resp => {
-                        if (resp.httpCode == 200 ) {
-                            navigate('/dashboard')
+                        if (resp.httpCode === 200 ) {
+                            localStorage.setItem("loggedInUser", resp.loggedInUser);
+                            localStorage.setItem("userPrincipalName", resp.userPrincipalName);
                         }
                     })
                 }
@@ -34,17 +34,17 @@ function authorize(authDto, navigate) {
         });
 }
 
-function isAuthorized() {
+async function isAuthorized(authDto) {
     let request = new Request(HOST.backend_api_is_authorized, {
-        method: 'GET',
+        method: 'POST',
         headers : {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
-        // body: JSON.stringify({"user" : "user"})
+        body: JSON.stringify(authDto)
     });
     
-    fetch(request)
+    await fetch(request)
         .then(
             function(response) {
                 if (response.ok) {

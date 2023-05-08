@@ -1,0 +1,15 @@
+.background-container.css-1oqqzyl-MuiContainer-root {
+    background-color: rgb(201, 213, 224);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 2560px !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.logs-container {
+    height: 60vh;
+    width: 40vw;
+    overflow-y: scroll;
+}
