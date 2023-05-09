@@ -14,12 +14,14 @@ import { deploy, uploadApplication } from '../api/framework-dashboard-api';
 function FrameworkDashboard() {
  
   const [logReceived, setLogReceived] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoaded, setIsLoaded] = useState(true);
   const [renderNewDeployment, setRenderNewDeployment] = useState(true);
   const [renderDeployedApplications, setRenderDeployedApplications] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInput = useRef(null)
   const sock = new SockJS(HOST.backend_api_websocket_deployment_logs);
+  const navigate = useNavigate();
   
   const handleOpenSocket = () => {
 
@@ -69,16 +71,16 @@ function FrameworkDashboard() {
         "loggedInUser": localStorage.getItem("loggedInUser"),
         "userPrincipalName": localStorage.getItem("userPrincipalName"),
       }
-      console.log(authDto)
-      let resp = await isAuthorized(authDto);
+      let resp = await isAuthorized(authDto, setIsLoggedIn, navigate);
     }
+    
     isAuthorizedWrapper();
     handleOpenSocket();
     setIsLoaded(true);
-  }, [isLoaded])
+  }, [isLoaded, isLoggedIn])
 
   return (
-      isLoaded && 
+      isLoaded && isLoggedIn &&
       <Box>
         <ResponsiveAppBar 
           setRenderNewDeployment={setRenderNewDeployment}

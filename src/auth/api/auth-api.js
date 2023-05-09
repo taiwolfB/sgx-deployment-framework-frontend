@@ -34,7 +34,7 @@ async function authorize(authDto) {
         });
 }
 
-async function isAuthorized(authDto) {
+async function isAuthorized(authDto, setIsLoggedIn, navigate) {
     let request = new Request(HOST.backend_api_is_authorized, {
         method: 'POST',
         headers : {
@@ -44,21 +44,38 @@ async function isAuthorized(authDto) {
         body: JSON.stringify(authDto)
     });
     
-    await fetch(request)
-        .then(
-            function(response) {
-                if (response.ok) {
-                    response.json().then(resp => console.log(resp))
-                }
-                else {
-                    response.json().then(err => console.log(err));
-                }
-            })
-        .catch(function (err) {
-            //catch any other unexpected error, and set custom code for error = 1
-            // callback(null, 1, err)
-            console.log(err)
-        });
+    fetch(request)
+    .then(
+        function(response) {
+            if (response.ok) {
+                response.json().then(resp => {
+                  if (resp.httpCode === 200 && localStorage.getItem("loggedInUser") !== null && localStorage.getItem("userPrincipalName") !== null) {
+                    setIsLoggedIn(true);
+                    console.log(resp)
+                  }
+                  if (resp.httpCode === 401 || localStorage.getItem("loggedInUser") === null || localStorage.getItem("userPrincipalName") === null) {
+                    setIsLoggedIn(false);
+                    console.log(resp)
+                    navigate('/')
+                  }
+                }) 
+            }
+            else {
+                response.json().then(err => {
+                  if (err.httpCode === 401 || localStorage.getItem("loggedInUser") === null || localStorage.getItem("userPrincipalName") === null) {
+                    setIsLoggedIn(false);
+                    console.log(err)
+                    navigate('/')
+                  }
+                });
+            }
+
+        })
+    .catch(function (err) {
+        setIsLoggedIn(false);
+        navigate('/');
+        console.log(err)
+    });
 }
 
 // function unauthorize(user) {

@@ -36,7 +36,7 @@ function AuthComponent() {
     };
     let response = await authorize(authDto);
     
-    if (localStorage.getItem("loggedInUser") !== '' && localStorage.getItem("userPrincipalName") !== '') {
+    if (localStorage.getItem("loggedInUser") !== null && localStorage.getItem("userPrincipalName") !== null) {
       navigate('/dashboard')
     }
   }
