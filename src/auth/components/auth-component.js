@@ -73,11 +73,11 @@ function AuthComponent() {
   }, [])
 
   return (
-    <Container className = 'welcome-page-container'>
+    <div className = 'welcome-page-container'>
       {/* <Typography component = 'div' variant = 'h3'>
         A framework for safe deployments of Intel SGX Applications
       </Typography> * */}
-      <Container className = 'login-container'>
+      <div className = 'login-container'>
         <img className = 'login-image' src={require('../../resources/deployment.png')}/>
         <Box className = 'form-box'>
           <Typography component = 'h1' variant = 'h5'>
@@ -157,8 +157,8 @@ function AuthComponent() {
               }
               </FormGroup>
           }
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
 }
 

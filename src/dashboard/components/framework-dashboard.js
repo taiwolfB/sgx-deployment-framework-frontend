@@ -89,7 +89,7 @@ function FrameworkDashboard() {
         </ResponsiveAppBar>
         {
           renderNewDeployment && 
-          <Container className='background-container'>
+          <div className='background-container'>
             <FormGroup>
               <Typography>Please input your compiled .exe.</Typography>
               <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
@@ -119,12 +119,12 @@ function FrameworkDashboard() {
               <Button onClick={handleStartDeployment}>Start Deployment</Button>
 
             </FormGroup>
-            <Container className='logs-container'>
+            <div className='logs-container'>
               {
                 logReceived.map((log) => <Typography>{log}</Typography>)
               }
-            </Container>
-          </Container>
+            </div>
+          </div>
         } 
         {
           renderDeployedApplications &&
