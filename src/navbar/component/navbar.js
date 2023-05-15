@@ -41,10 +41,9 @@ function ResponsiveAppBar(props) {
     props.setRenderDeployedApplications(false);
   }
 
-  const handleClickViewDeployedApplications = () => {
+  const handleClickViewDeployedApplications = async () => {
     props.setRenderNewDeployment(false);
     props.setRenderDeployedApplications(true);
-
   }
 
   return (

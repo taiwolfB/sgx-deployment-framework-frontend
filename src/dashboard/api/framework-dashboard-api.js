@@ -54,8 +54,39 @@ async function deploy(deployDto) {
         });
 }
 
+async function getDeployedApplications(setDeployedApplications, setDataIsFetched) {
+    let request = new Request(HOST.backend_api_get_deployed_applications, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    });
+
+    // let response = await fetch(request);
+    return await fetch(request)
+        .then(
+            function(response) {
+                if (response.ok) {
+                    response.json().then(resp => {
+                        setDeployedApplications(resp);
+                        setDataIsFetched(true);
+                    })
+                }
+                else {
+                    response.json().then(err => console.log(err));
+                }
+            })
+        .catch(function (err) {
+            //catch any other unexpected error, and set custom code for error = 1
+            // callback(null, 1, err)
+            console.log(err)
+        });
+}
+
 
 export {
     deploy,
-    uploadApplication
+    uploadApplication,
+    getDeployedApplications
 };

@@ -6,6 +6,7 @@ export const HOST = {
     backend_api_websocket_deployment_logs: out_backend_api + '/deployment-logs',
     backend_api_is_authorized: out_backend_api + '/azure/is-authorized',
     backend_api_upload: out_backend_api + '/azure/upload',
-    backend_api_deploy: out_backend_api + '/azure/deploy'
+    backend_api_deploy: out_backend_api + '/azure/deploy',
+    backend_api_get_deployed_applications: out_backend_api + '/azure/deployed-applications',
 
 };

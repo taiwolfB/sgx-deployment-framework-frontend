@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Container, Button, TextField, Link, Grid, Box, Typography, Tooltip, FormGroup, Input, IconButton, InputAdornment, FormControl, InputLabel, OutlinedInput} from '@mui/material';
+import { CircularProgress, Alert, Container, Button, TextField, Link, Grid, Box, Typography, Tooltip, FormGroup, Input, IconButton, InputAdornment, FormControl, InputLabel, OutlinedInput} from '@mui/material';
 import '../styles/framework-dashboard.css';
 import { isAuthorized } from '../../auth/api/auth-api'
 import { HOST } from '../../hosts';
@@ -9,7 +9,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useNavigate  } from 'react-router';
 import ResponsiveAppBar from '../../navbar/component/navbar';
-import { deploy, uploadApplication } from '../api/framework-dashboard-api';
+import { deploy, getDeployedApplications, uploadApplication } from '../api/framework-dashboard-api';
+import ApplicationCard from "./application-card"
 
 function FrameworkDashboard() {
  
@@ -18,8 +19,10 @@ function FrameworkDashboard() {
   const [isLoaded, setIsLoaded] = useState(true);
   const [renderNewDeployment, setRenderNewDeployment] = useState(true);
   const [renderDeployedApplications, setRenderDeployedApplications] = useState(false);
+  const [deployedApplications, setDeployedApplications] = useState([]);
+  const [isDataFetched, setIsDataFetched] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const fileInput = useRef(null)
+  const fileInput = useRef(null);
   const sock = new SockJS(HOST.backend_api_websocket_deployment_logs);
   const navigate = useNavigate();
   
@@ -40,27 +43,42 @@ function FrameworkDashboard() {
     var stompcli = Stomp.over(sock);
     stompcli.connect({}, function (frame) {
         stompcli.subscribe("/azure/deployment-logs", function (webSocketResponse) {
-          setLogReceived(logReceived => [...logReceived, JSON.parse(webSocketResponse.body).message] );
+           const presentLogs = logReceived.slice();
+           if (!presentLogs.find(e => e === JSON.parse(webSocketResponse.body).message)) {
+            setLogReceived(logReceived => [...logReceived, JSON.parse(webSocketResponse.body).message]);
+           }
         });
     });
   }
 
   const handleStartDeployment = async () => {
-     const formData = new FormData();
-     formData.append('file', selectedFile);
-     const buffer = await selectedFile.arrayBuffer();
-     let byteArray = new Int8Array(buffer);
-     const base64String = btoa(String.fromCharCode(...new Uint8Array(byteArray)));
-     const fileUploadDto = {
-      "encodedByteArray": base64String,
-      "applicationName":  document.getElementById("app-name-id").value,
-     }
-    let resp = await uploadApplication(fileUploadDto);
-
-    const deployDto = {
-      applicationName: document.getElementById("app-name-id").value,
+    if (JSON.parse(localStorage.getItem("isDeploymentInProgress")) === false) {
+      localStorage.setItem("isDeploymentInProgress", true);
+      console.log(localStorage.getItem("isDeploymentInProgress"))
+      setLogReceived([]);
+      if (selectedFile !== null ) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        const buffer = await selectedFile.arrayBuffer();
+        let byteArray = new Int8Array(buffer);
+        const base64String = btoa(String.fromCharCode(...new Uint8Array(byteArray)));
+        const fileUploadDto = {
+         "encodedByteArray": base64String,
+         "applicationName":  document.getElementById("app-name-id").value,
+        }
+        let resp = await uploadApplication(fileUploadDto);
+  
+        const deployDto = {
+          applicationName: document.getElementById("app-name-id").value,
+        }
+        deploy(deployDto);
+      } else {
+        alert('You must select an application to be deployed. It must be compiled for Linux platform and it must be .exe format.')
+      }
+    } else {
+      alert('There can be only one deployment in progress at one time.');
     }
-    deploy(deployDto);
+    localStorage.setItem("isDeploymentInProgress", false);
   }
 
   useEffect(() => {
@@ -74,14 +92,26 @@ function FrameworkDashboard() {
       let resp = await isAuthorized(authDto, setIsLoggedIn, navigate);
     }
     
+    if (localStorage.getItem("isDeploymentInProgress") === undefined || localStorage.getItem("isDeploymentInProgress") === null) {
+      localStorage.setItem("isDeploymentInProgress", false);
+    }
     isAuthorizedWrapper();
     handleOpenSocket();
     setIsLoaded(true);
-  }, [isLoaded, isLoggedIn])
+  }, [])
+
+  useEffect(() => {
+    const getDeployedAppsAsync = async () => {
+      if (renderDeployedApplications) {
+        let response = await getDeployedApplications(setDeployedApplications, setIsDataFetched);
+      }
+    }
+    getDeployedAppsAsync();
+  }, [renderDeployedApplications])
 
   return (
       isLoaded && isLoggedIn &&
-      <Box>
+      <div className="big-container">
         <ResponsiveAppBar 
           setRenderNewDeployment={setRenderNewDeployment}
           setRenderDeployedApplications={setRenderDeployedApplications}
@@ -121,18 +151,36 @@ function FrameworkDashboard() {
             </FormGroup>
             <div className='logs-container'>
               {
-                logReceived.map((log) => <Typography>{log}</Typography>)
+                logReceived.map((log) => <Typography key={log}>{log}</Typography>)
               }
             </div>
           </div>
         } 
         {
-          renderDeployedApplications &&
-          <Container className='background-container'>
-            ALL APPS
-          </Container>
+          renderDeployedApplications && isDataFetched &&
+          <div className='background-container-apps'>
+              {
+                deployedApplications.map(app => 
+                  <div>
+                        <ApplicationCard 
+                        key={app.applicationName + app.virtualMachineIp}
+                        applicationName={app.applicationName}
+                        virtualMachineIp={app.virtualMachineIp}
+                        sshUsername={app.sshUsername}
+                        sshKey={app.sshKey}
+                      />
+                  </div>
+                ) 
+              }
+          </div>
         }
-      </Box>
+        {
+          renderDeployedApplications && !isDataFetched &&
+          <div className='background-container' >FETCHING DATA, PLEASE WAIT
+            <CircularProgress />
+          </div> 
+        }
+      </div>
     );
   }
   

@@ -11,5 +11,31 @@
 .logs-container {
     height: 60vh;
     width: 40vw;
-    overflow-y: scroll;
+    overflow: auto;
+}
+
+.ssh-field {
+    background-color: rgb(158, 156, 156);
+}
+
+.ssh-copy-icon {
+    margin-left: 25px;
+}
+
+.background-container-apps {
+    background-color: rgb(201, 213, 224);
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    max-width: 2560px !important;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.app-card {
+    margin-top: 40px;
+}
+
+.big-container {
+    overflow: 'auto';
 }
