@@ -81,6 +81,15 @@ function FrameworkDashboard() {
     localStorage.setItem("isDeploymentInProgress", false);
   }
 
+  const handleClickUpload = () => {
+    fileInput.current.click();
+  }
+  
+  const handleSelectFile = (event) => {
+    setSelectedFile(event.target.files[0]);
+    document.getElementById("app-name-id").value = event.target.files[0].name;
+  }
+
   useEffect(() => {
     const isAuthorizedWrapper = async () => {
       let authDto = {
@@ -123,7 +132,7 @@ function FrameworkDashboard() {
             <FormGroup>
               <Typography>Please input your compiled .exe.</Typography>
               <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                <InputLabel htmlFor="app-name-id">Application name</InputLabel>
+                <InputLabel htmlFor="app-name-id"  shrink={true} >Application name</InputLabel>
                 <OutlinedInput
                     id="app-name-id"
                     type='text'
@@ -133,7 +142,7 @@ function FrameworkDashboard() {
                 <Button 
                   variant="contained" 
                   color="primary" 
-                  onClick={()=>fileInput.current.click()}
+                  onClick={handleClickUpload}
                 >
                 upload file
                 </Button>
@@ -142,7 +151,7 @@ function FrameworkDashboard() {
                   ref={fileInput} 
                   type="file" 
                   style={{ display: 'none' }}
-                  onChange={(e) => {setSelectedFile(e.target.files[0])}}
+                  onChange={(e) => {handleSelectFile(e)}}
                 />
               </FormControl>
 
