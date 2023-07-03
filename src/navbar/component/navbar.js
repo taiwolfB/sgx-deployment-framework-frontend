@@ -13,13 +13,13 @@ import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-
-const pages = ['Deploy a new application', 'Deployed Applications'];
-const settings = ['Logout'];
+import { useNavigate } from 'react-router';
 
 function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const navigate = useNavigate();
+  const pages = ['Deploy a new application', 'Deployed Applications'];
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -34,6 +34,8 @@ function ResponsiveAppBar(props) {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    localStorage.clear();
+    navigate("/");
   };
 
   const handleClickDeployNewApplication = () => {
@@ -163,11 +165,10 @@ function ResponsiveAppBar(props) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+             
+            <MenuItem key="Logout" onClick={handleCloseUserMenu}>
+              <Typography OtextAlign="center" href="/">Logout</Typography>
+            </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

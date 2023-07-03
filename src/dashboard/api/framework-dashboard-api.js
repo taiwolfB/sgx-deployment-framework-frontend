@@ -70,6 +70,7 @@ async function getDeployedApplications(setDeployedApplications, setDataIsFetched
                 if (response.ok) {
                     console.log(response);
                     response.json().then(resp => {
+                        console.log(resp);
                         setDeployedApplications(resp);
                         setDataIsFetched(true);
                     })
