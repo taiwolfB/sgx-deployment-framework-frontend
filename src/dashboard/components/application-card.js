@@ -14,6 +14,7 @@ export default function ApplicationCard(props) {
 
   const handleCopySSH = () => {
     navigator.clipboard.writeText(props.sshKey)
+    console.log(props.sshKey)
   }
 
   return (
