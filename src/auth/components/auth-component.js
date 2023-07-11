@@ -111,7 +111,6 @@ function AuthComponent() {
                     <OutlinedInput
                         id="azure-subscription-id"
                         type={showSubscriptionId ? 'text' : 'password'}
-                        value="3509478a-02c5-4d60-9e10-9ef8a91f9fe6"
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton
@@ -130,7 +129,6 @@ function AuthComponent() {
                     <InputLabel htmlFor="azure-tenant-id">Azure Tenant Id</InputLabel>
                     <OutlinedInput
                         id="azure-tenant-id"
-                        value="9f558ccc-b781-4dd7-aefe-fb3db49503c9"
                         type={showTenantId ? 'text' : 'password'}
                         endAdornment={
                           <InputAdornment position="end">
